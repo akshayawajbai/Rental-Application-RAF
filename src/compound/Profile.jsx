@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
+import toast from 'react-hot-toast'
 import { User, Camera, Edit2, Save, X, Upload, Key, Mail, Lock, CheckCircle, AlertCircle } from 'lucide-react'
+import { API } from '../config/api'
 import '../compoundcss/Profile.css'
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -14,14 +16,13 @@ function Profile() {
   const [resetForm, setResetForm] = useState({ email: '', otp: '', newPassword: '' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [toast, setToast] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 
     // Fetch user profile data
-    fetch(import.meta.env.VITE_API_PROFILE_URL, {
+    fetch(API.usersProfile, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -46,7 +47,7 @@ function Profile() {
       .catch(err => console.error(err));
 
     // Fetch profile image
-    fetch(import.meta.env.VITE_API_PROFILE_IMAGE_URL, {
+    fetch(API.usersProfileImage, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -58,7 +59,7 @@ function Profile() {
         throw new Error("No image");
       })
       .then(data => {
-        setProfileImage(`${import.meta.env.VITE_API_BASE_URL}${data.image}`);
+        setProfileImage(`${API.base}${data.image}`);
       })
       .catch(err => console.log("No profile image found"));
   }, []);
@@ -67,11 +68,6 @@ function Profile() {
       console.log("Updated user state:", user);
     }
   }, [user]);
-  const showToast = (message, type = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
-
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -82,7 +78,7 @@ function Profile() {
 
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(import.meta.env.VITE_API_UPDATE_IMAGE_URL, {
+      const response = await fetch(API.usersUpdateImage, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -92,16 +88,16 @@ function Profile() {
 
       if (response.ok) {
         const data = await response.json();
-        setProfileImage(`${import.meta.env.VITE_API_BASE_URL}${data.image}`);
+        setProfileImage(`${API.base}${data.image}`);
         // Update the image in nav by reloading
         window.location.reload();
-        showToast('Profile image updated successfully!', 'success');
+        toast.success('Profile image updated successfully!');
       } else {
-        showToast('Failed to upload image', 'error');
+        toast.error('Failed to upload image');
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      showToast('Error uploading image', 'error');
+      toast.error('Error uploading image');
     } finally {
       setUploading(false);
     }
@@ -110,7 +106,7 @@ function Profile() {
   const handleProfileUpdate = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(import.meta.env.VITE_API_PROFILE_URL, {
+      const response = await fetch(API.usersProfile, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -133,13 +129,13 @@ function Profile() {
           workDescription: editForm.workDescription
         });
         setIsEditing(false);
-        showToast('Profile updated successfully!', 'success');
+        toast.success('Profile updated successfully!');
       } else {
-        showToast('Failed to update profile', 'error');
+        toast.error('Failed to update profile');
       }
     } catch (error) {
       console.error("Error updating profile:", error);
-      showToast('Error updating profile', 'error');
+      toast.error('Error updating profile');
     }
   };
 
@@ -158,11 +154,11 @@ function Profile() {
       const userId = user?.userId;
 
       if (!userId) {
-        showToast('User information not available', 'error');
+        toast.error('User information not available');
         return;
       }
 
-      const response = await fetch(import.meta.env.VITE_API_FORGOT_PASSWORD_URL, {
+      const response = await fetch(API.usersForgotPassword, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,14 +173,14 @@ function Profile() {
       const result = await response.text();
 
       if (response.ok) {
-        showToast('OTP has been sent to your email if it exists', 'success');
+        toast.success('OTP has been sent to your email if it exists');
         setPasswordStep('reset');
       } else {
-        showToast(result || 'Failed to send OTP', 'error');
+        toast.error(result || 'Failed to send OTP');
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
-      showToast('Error sending OTP', 'error');
+      toast.error('Error sending OTP');
     } finally {
       setLoading(false);
     }
@@ -195,7 +191,7 @@ function Profile() {
     setMessage('');
 
     try {
-      const response = await fetch(import.meta.env.VITE_API_RESET_PASSWORD_URL, {
+      const response = await fetch(API.usersResetPassword, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -210,7 +206,7 @@ function Profile() {
       const result = await response.text();
 
       if (response.ok) {
-        showToast('Password reset successfully!', 'success');
+        toast.success('Password reset successfully!');
         setTimeout(() => {
           setShowPasswordReset(false);
           setPasswordStep('forgot');
@@ -218,11 +214,11 @@ function Profile() {
           setMessage('');
         }, 2000);
       } else {
-        showToast(result || 'Failed to reset password', 'error');
+        toast.error(result || 'Failed to reset password');
       }
     } catch (error) {
       console.error('Error resetting password:', error);
-      showToast('Error resetting password', 'error');
+      toast.error('Error resetting password');
     } finally {
       setLoading(false);
     }
@@ -502,25 +498,6 @@ function Profile() {
         </div>
       )}
 
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            className={`toast ${toast.type}`}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.4 }}
-          >
-            {toast.type === 'success' ? (
-              <CheckCircle size={20} />
-            ) : (
-              <AlertCircle size={20} />
-            )}
-            <span>{toast.message}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 }

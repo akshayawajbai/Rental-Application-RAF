@@ -1,21 +1,36 @@
-import { Home, FileText, User, LogOut, ChevronDown, HelpCircle, Settings } from 'lucide-react'
+import { Home, FileText, User, LogOut, ChevronDown, HelpCircle, Settings, Moon, Sun } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
+import toast from 'react-hot-toast'
+import { API } from '../config/api'
 import '../compoundcss/Nav.css'
+
+const THEME_KEY = 'theme'
 
 function Nav() {
   const navigate = useNavigate()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [reportDropdownOpen, setReportDropdownOpen] = useState(false)
   const [userData, setUserData] = useState({ name: 'Loading...', profileImage: null })
   const [scrolled, setScrolled] = useState(false)
+  const [theme, setTheme] = useState(() => document.documentElement.getAttribute('data-theme') || localStorage.getItem(THEME_KEY) || 'dark')
   const dropdownRef = useRef(null)
+  const reportDropdownRef = useRef(null)
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    localStorage.setItem(THEME_KEY, next)
+    document.documentElement.setAttribute('data-theme', next)
+    setTheme(next)
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('authToken')
+    toast.success('Logged out successfully.')
     navigate('/', { replace: true })
   }
 
-  // Fetch user data from API
+  // Fetch user data and role from API
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -24,7 +39,7 @@ function Nav() {
 
         // 1️⃣ Get profile info
         const profileResponse = await fetch(
-          import.meta.env.VITE_API_PROFILE_URL,
+          API.usersProfile,
           {
             method: 'POST',
             headers: {
@@ -40,7 +55,7 @@ function Nav() {
 
         // 2️⃣ Get profile image path
         const imageResponse = await fetch(
-          import.meta.env.VITE_API_PROFILE_IMAGE_URL,
+          API.usersProfileImage,
           {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -52,14 +67,13 @@ function Nav() {
 
         if (imageResponse.ok) {
           const imageData = await imageResponse.json()
-          imageUrl = `${import.meta.env.VITE_API_BASE_URL}${imageData.image}`
+          imageUrl = `${API.base}${imageData.image}`
         }
 
         setUserData({
           name: profileData.name || 'User',
           profileImage: imageUrl
         })
-
       } catch (error) {
         console.error('Error fetching user data:', error)
         setUserData({ name: 'User', profileImage: null })
@@ -85,6 +99,9 @@ function Nav() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false)
       }
+      if (reportDropdownRef.current && !reportDropdownRef.current.contains(event.target)) {
+        setReportDropdownOpen(false)
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
@@ -93,6 +110,12 @@ function Nav() {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen)
+    setReportDropdownOpen(false)
+  }
+
+  const toggleReportDropdown = () => {
+    setReportDropdownOpen(!reportDropdownOpen)
+    setDropdownOpen(false)
   }
 
   return (
@@ -111,7 +134,7 @@ function Nav() {
               type="button" 
               className="nav-link" 
               aria-label="Home" 
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/hero')}
             >
               <div className="nav-link-icon">
                 <Home size={18} strokeWidth={2} />
@@ -119,16 +142,62 @@ function Nav() {
               <span className="nav-link-text">Home</span>
             </button>
 
-            <button 
-              type="button" 
-              className="nav-link" 
-              aria-label="Reports"
-              onClick={() => navigate('/report')}
+            <div className="nav-report-wrap" ref={reportDropdownRef}>
+              <button
+                type="button"
+                className={`nav-link nav-link-report ${reportDropdownOpen ? 'open' : ''}`}
+                aria-label="Report"
+                aria-expanded={reportDropdownOpen}
+                onClick={toggleReportDropdown}
+              >
+                <div className="nav-link-icon">
+                  <FileText size={18} strokeWidth={2} />
+                </div>
+                <span className="nav-link-text">Modules</span>
+                <ChevronDown
+                  size={16}
+                  strokeWidth={2.5}
+                  className={`nav-report-chevron ${reportDropdownOpen ? 'open' : ''}`}
+                />
+              </button>
+              {reportDropdownOpen && (
+                <div className="nav-report-dropdown">
+                  <button
+                    type="button"
+                    className="nav-report-dropdown-item"
+                    onClick={() => {
+                      navigate('/report/month-screen')
+                      setReportDropdownOpen(false)
+                    }}
+                  >
+                    Month Screen
+                  </button>
+                  <button
+                    type="button"
+                    className="nav-report-dropdown-item"
+                    onClick={() => {
+                      navigate('/report/purchase-screen')
+                      setReportDropdownOpen(false)
+                    }}
+                  >
+                    Purchase Screen
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              className="nav-theme-toggle"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
             >
-              <div className="nav-link-icon">
-                <FileText size={18} strokeWidth={2} />
-              </div>
-              <span className="nav-link-text">Reports</span>
+              {theme === 'dark' ? (
+                <Sun size={18} strokeWidth={2} />
+              ) : (
+                <Moon size={18} strokeWidth={2} />
+              )}
             </button>
           </div>
 

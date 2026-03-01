@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { API } from '../../config/api'
 import '../../compoundcss/Login.css'
-const API_BASE_URL = import.meta.env.VITE_API_LOGIN_URL
 
 function Login() {
   const [username, setUsername] = useState('')
@@ -32,7 +33,7 @@ function Login() {
 
   const fetchUserRole = async (token) => {
     try {
-      const response = await fetch(import.meta.env.VITE_API_USER_ROLE_URL, {
+      const response = await fetch(API.usersGetUserRole, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -63,7 +64,7 @@ function Login() {
 
     setLoading(true)
     try {
-      const url = `${API_BASE_URL}?username=${encodeURIComponent(
+      const url = `${API.usersLogin}?username=${encodeURIComponent(
         username,
       )}&password=${encodeURIComponent(password)}`
 
@@ -77,16 +78,30 @@ function Login() {
 
       const data = await response.json().catch(() => null)
 
-      let token = null
-      if (data && typeof data === 'object' && 'token' in data) {
-        token = data.token
+      // Backend now returns { accessToken, refreshToken }
+      let accessToken = null
+      let refreshToken = null
+      if (data && typeof data === 'object') {
+        if ('accessToken' in data) {
+          accessToken = data.accessToken
+        } else if ('token' in data) {
+          // Backwards compatibility if backend still uses `token`
+          accessToken = data.token
+        }
+        if ('refreshToken' in data) {
+          refreshToken = data.refreshToken    
+        }
       }
 
-      if (token) {
-        localStorage.setItem('authToken', token)
+      if (accessToken) {
+        localStorage.setItem('authToken', accessToken)
+        if (refreshToken) {
+          localStorage.setItem('refreshToken', refreshToken)
+        }
+        toast.success('Login successful!')
         
         // Fetch user role and navigate accordingly
-        const userRole = await fetchUserRole(token)
+        const userRole = await fetchUserRole(accessToken)
         
         if (userRole === 'ADMIN') {
           navigate('/admin', { replace: true })
@@ -100,7 +115,9 @@ function Login() {
         navigate('/hero', { replace: true })
       }
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.')
+      const msg = err.message || 'Login failed. Please try again.'
+      setError(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }

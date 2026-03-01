@@ -1,17 +1,40 @@
+/* =========================
+   THEME: Dark (default) & Light
+========================= */
+
+:root,
+[data-theme="dark"] {
+  --app-bg: #0f0f14;
+  --app-text: rgba(255, 255, 255, 0.9);
+  --app-text-muted: rgba(255, 255, 255, 0.6);
+  --app-surface: rgba(255, 255, 255, 0.05);
+  --app-border: rgba(255, 255, 255, 0.08);
+  --app-accent: #6366f1;
+  --app-accent-hover: #4f46e5;
+}
+
+[data-theme="light"] {
+  --app-bg: #f1f5f9;
+  --app-text: #1e293b;
+  --app-text-muted: #64748b;
+  --app-surface: #ffffff;
+  --app-border: rgba(0, 0, 0, 0.08);
+  --app-accent: #6366f1;
+  --app-accent-hover: #4f46e5;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
+  color-scheme: light dark;
+  color: var(--app-text);
+  background-color: var(--app-bg);
 }
 
 *,
@@ -22,19 +45,20 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--app-accent);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--app-accent-hover);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: inherit;
-  color: inherit;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1 {
@@ -42,24 +66,36 @@ h1 {
   line-height: 1.1;
 }
 
-
-button:hover {
-  border-color: #646cff;
-}
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.page-with-nav {
+  min-height: 100vh;
+  background-color: var(--app-bg);
+  transition: background-color 0.3s ease;
+}
+
+/* Theme-aware hero & content */
+.hero-title {
+  color: var(--app-text);
+}
+
+.hero-subtitle {
+  color: var(--app-text-muted);
+}
+
+[data-theme="light"] .hero-card {
+  background: var(--app-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--app-border);
+}
+
+[data-theme="light"] .admin-layout {
+  background: var(--app-bg);
+}
+
+[data-theme="light"] .app-root {
+  background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
 }

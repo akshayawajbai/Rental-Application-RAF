@@ -1,0 +1,353 @@
+/* Room Rent form – one row, four fields */
+.room-rent-section {
+  margin-top: 1rem;
+}
+
+.room-rent-form {
+  max-width: 100%;
+}
+
+.room-rent-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.room-rent-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 140px;
+  flex: 1;
+}
+
+.room-rent-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.room-rent-select,
+.room-rent-input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.9375rem;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.room-rent-select:focus,
+.room-rent-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.room-rent-select:disabled,
+.room-rent-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.room-rent-select option {
+  background: #1a1a24;
+  color: #e2e8f0;
+}
+
+.room-rent-message {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
+}
+
+.room-rent-message--success {
+  color: #10b981;
+}
+
+.room-rent-message--error {
+  color: #ef4444;
+}
+
+.room-rent-actions {
+  margin-top: 0.5rem;
+}
+
+.room-rent-submit {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #fff;
+  background: #6366f1;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.room-rent-submit:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.room-rent-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.room-rent-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Monthly Summary – below form */
+.room-rent-summary-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.room-rent-summary-title {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.room-rent-summary-loading,
+.room-rent-summary-empty {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.room-rent-summary-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.room-rent-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.room-rent-summary-table thead {
+  background: rgba(99, 102, 241, 0.12);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.room-rent-summary-table th {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room-rent-summary-th-left {
+  text-align: left;
+}
+
+.room-rent-summary-th-num {
+  text-align: right;
+  min-width: 7rem;
+}
+
+.room-rent-summary-th-actions {
+  text-align: center;
+  min-width: 8rem;
+}
+
+.room-rent-summary-table td {
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.room-rent-summary-td-left {
+  text-align: left;
+}
+
+.room-rent-summary-td-num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  min-width: 7rem;
+}
+
+.room-rent-summary-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.room-rent-summary-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.room-rent-summary-td-actions {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.room-rent-summary-date-input {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  outline: none;
+}
+
+.room-rent-summary-date-input:focus {
+  border-color: #6366f1;
+}
+
+.room-rent-summary-btn-edit,
+.room-rent-summary-btn-apply,
+.room-rent-summary-btn-cancel {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 0.35rem;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.room-rent-summary-btn-edit {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.room-rent-summary-btn-edit:hover {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+.room-rent-summary-btn-apply {
+  color: #fff;
+  background: #6366f1;
+}
+
+.room-rent-summary-btn-apply:hover:not(:disabled) {
+  background: #4f46e5;
+}
+
+.room-rent-summary-btn-apply:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.room-rent-summary-btn-cancel {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.room-rent-summary-btn-cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================
+   LIGHT THEME – readable contrast
+========================= */
+
+[data-theme="light"] .room-rent-field label {
+  color: #334155;
+}
+
+[data-theme="light"] .room-rent-select,
+[data-theme="light"] .room-rent-input {
+  color: #1e293b;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+
+[data-theme="light"] .room-rent-select:focus,
+[data-theme="light"] .room-rent-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="light"] .room-rent-select option {
+  background: #ffffff;
+  color: #1e293b;
+}
+
+[data-theme="light"] .room-rent-summary-section {
+  border-top-color: #e2e8f0;
+}
+
+[data-theme="light"] .room-rent-summary-title,
+[data-theme="light"] .room-rent-summary-year {
+  color: #1e293b;
+}
+
+[data-theme="light"] .room-rent-summary-loading,
+[data-theme="light"] .room-rent-summary-empty {
+  color: #64748b;
+}
+
+[data-theme="light"] .room-rent-summary-wrap {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .room-rent-summary-table thead {
+  background: rgba(99, 102, 241, 0.15);
+  color: #1e293b;
+}
+
+[data-theme="light"] .room-rent-summary-table th {
+  border-bottom-color: rgba(99, 102, 241, 0.25);
+}
+
+[data-theme="light"] .room-rent-summary-table td {
+  color: #334155;
+  border-bottom-color: #e2e8f0;
+}
+
+[data-theme="light"] .room-rent-summary-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+[data-theme="light"] .room-rent-summary-date-input {
+  color: #1e293b;
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .room-rent-summary-btn-edit {
+  color: #4f46e5;
+  background: rgba(99, 102, 241, 0.15);
+}
+
+[data-theme="light"] .room-rent-summary-btn-cancel {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+[data-theme="light"] .room-rent-summary-btn-cancel:hover:not(:disabled) {
+  background: #cbd5e1;
+}
+
+@media (max-width: 700px) {
+  .room-rent-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .room-rent-field {
+    min-width: 100%;
+  }
+
+  .room-rent-summary-table th,
+  .room-rent-summary-table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}

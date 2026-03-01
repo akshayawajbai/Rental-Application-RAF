@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import { API } from '../../config/api'
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const [loading, setLoading] = useState(true)
@@ -17,7 +18,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
           return
         }
 
-        const response = await fetch(import.meta.env.VITE_API_USER_ROLE_URL, {
+        const response = await fetch(API.usersGetUserRole, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
